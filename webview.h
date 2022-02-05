@@ -798,10 +798,10 @@ public:
   ~cocoa_wkwebview_engine() { close(); }
   void *window() { return (void *)m_window; }
   void show() {
-      ((void (*)(id, SEL))objc_msgSend)(m_app, METHOD("show"));
+      ((void (*)(id, SEL))objc_msgSend)(m_app, "show"_sel);
   }
   void hide() {
-      ((void (*)(id, SEL))objc_msgSend)(m_app, METHOD("hide"));
+      ((void (*)(id, SEL))objc_msgSend)(m_app, "hide"_sel);
   }
   void minimize() {
     // ref: https://stackoverflow.com/q/33045075
