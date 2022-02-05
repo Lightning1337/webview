@@ -21,6 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+#define UNICODE
+
 #ifndef WEBVIEW_H
 #define WEBVIEW_H
 
@@ -53,11 +55,21 @@ WEBVIEW_API void webview_run(webview_t w);
 // background thread.
 WEBVIEW_API void webview_terminate(webview_t w);
 
-//show webview window
+// Shows webview window
 WEBVIEW_API void webview_show(webview_t w);
 
-//hide webview window
+// Hides webview window
 WEBVIEW_API void webview_hide(webview_t w);
+
+// Minimizes webview window
+WEBVIEW_API void webview_minimize(webview_t w);
+
+// Maximizes webview window
+WEBVIEW_API void webview_maximize(webview_t w);
+
+// Hides webview window to the system tray (WINDOWS ONLY)
+// Call webview_show to show it again
+WEBVIEW_API void webview_hide_to_system_tray(webview_t w);
 
 // Posts a function to be executed on the main thread. You normally do not need
 // to call this function, unless you want to tweak the native window.
@@ -565,6 +577,12 @@ public:
   void hide(){
     g_idle_add(GSourceFunc(hideWindowMain),this);
   }
+  void minimize() {
+    gtk_window_minimize(m_window);
+  }
+  void maximize() {
+    gtk_window_maximize(m_window);
+  }
 
   void set_size(int width, int height, int hints) {
     gtk_window_set_resizable(GTK_WINDOW(m_window), hints != WEBVIEW_HINT_FIXED);
@@ -764,6 +782,25 @@ public:
   void hide() {
       ((void (*)(id, SEL))objc_msgSend)(m_app, METHOD("hide"));
   }
+  void minimize() {
+    // ref: https://stackoverflow.com/q/33045075
+    // [[NSApp mainWindow] miniaturize:nil];
+    ((void (*)(id, SEL, id))objc_msgSend)(m_window, "miniaturize:"_sel, nullptr);
+  }
+  void maximize() {
+    // ref: https://stackoverflow.com/a/14422648
+    // [myWindow setFrame:[[NSScreen mainScreen] visibleFrame] display:YES];
+    ((void (*)(id, SEL, id, SEL, id))objc_msgSend)(
+      m_window, 
+      "setFrame:"_sel, 
+      ((id(*)(id, SEL))objc_msgSend)(
+        ((id(*)(id, SEL))objc_msgSend)("NSScreen"_cls, "mainScreen"_sel), 
+        "visibleFrame"_sel
+      ), 
+      "display:"_sel, 
+      ((id(*)(id, SEL, BOOL))objc_msgSend)("NSNumber"_cls, "numberWithBool:"_sel, 1)
+    );
+  }
   void terminate() {
     close();
     ((void (*)(id, SEL, id))objc_msgSend)("NSApp"_cls, "terminate:"_sel,
@@ -872,7 +909,6 @@ using browser_engine = cocoa_wkwebview_engine;
 // ====================================================================
 //
 
-#define WIN32_LEAN_AND_MEAN
 #include <codecvt>
 #include <shlobj.h>
 #include <shlwapi.h>
@@ -1130,6 +1166,8 @@ private:
   };
 };
 
+#define APPWM_ICONNOTIFY (WM_APP + 1)
+
 class win32_edge_engine {
 public:
   win32_edge_engine(bool debug, void *window) {
@@ -1172,6 +1210,17 @@ public:
                 lpmmi->ptMinTrackSize = w->m_minsz;
               }
             } break;
+            case APPWM_ICONNOTIFY: {
+              switch (lp)
+              {
+              case WM_LBUTTONUP: // Icon left click
+                w->show();
+                Shell_NotifyIcon(NIM_DELETE, &w->m_nid);
+                break;
+              case WM_RBUTTONUP: // Icon right click
+                break;
+              }
+            }
             default:
               return DefWindowProcW(hwnd, msg, wp, lp);
             }
@@ -1216,6 +1265,7 @@ public:
         (*f)();
         delete f;
       } else if (msg.message == WM_QUIT) {
+        Shell_NotifyIcon(NIM_DELETE, &m_nid);
         return;
       }
     }
@@ -1223,15 +1273,15 @@ public:
   void *window() { return (void *)m_window; }
   void hide() { ShowWindow(m_window, SW_HIDE); }
   void show() { ShowWindow(m_window, SW_SHOW); }
+  void minimize() { ShowWindow(m_window, SW_MINIMIZE); }
+  void maximize() { ShowWindow(m_window, SW_MAXIMIZE); }
   void terminate() { PostQuitMessage(0); }
   void dispatch(dispatch_fn_t f) {
     PostThreadMessage(m_main_thread, WM_APP, 0, (LPARAM) new dispatch_fn_t(f));
   }
-
   void set_title(const std::string title) {
     SetWindowTextW(m_window, to_lpwstr(title).c_str());
   }
-
   void set_icon(const std::string icon) {
     TCHAR tempLocation[MAX_PATH+1];
     GetTempPathW(sizeof(tempLocation)/sizeof(TCHAR), (LPWSTR)tempLocation);
@@ -1244,12 +1294,33 @@ public:
     HANDLE hicon = LoadImageW(NULL, std::wstring(fileLocation.begin(), fileLocation.end()).c_str(), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE | LR_LOADFROMFILE);
 	  SendMessageW(m_window, WM_SETICON, ICON_BIG, (LPARAM)hicon);
   }
-
   void set_icon_from_file(const std::string iconFile) {
     HANDLE hicon = LoadImageW(NULL, std::wstring(iconFile.begin(), iconFile.end()).c_str(), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE | LR_LOADFROMFILE);
 	  SendMessageW(m_window, WM_SETICON, ICON_BIG, (LPARAM)hicon);
   }
-
+  void hide_to_system_tray() {
+    // The window title will be shown as the icon's tooltip.
+    TCHAR title[80];
+    GetWindowText(m_window, title, 80);
+    // Hide window
+    hide();
+    // Get the icon
+    HICON iconHandle = (HICON)SendMessageW(m_window, WM_GETICON, ICON_BIG, 0);
+    if (iconHandle == nullptr)
+      iconHandle = (HICON)SendMessageW(m_window, WM_GETICON, ICON_SMALL, 0);
+    if (iconHandle == nullptr)
+      iconHandle = (HICON)SendMessageW(m_window, WM_GETICON, ICON_SMALL2, 0);
+    // Create icon
+    m_nid = {};
+    m_nid.cbSize = sizeof(m_nid);
+    m_nid.hWnd = m_window;
+    m_nid.hIcon = iconHandle;
+    m_nid.uID = 1;
+    m_nid.uFlags = NIF_ICON | NIF_TIP | NIF_MESSAGE;
+    m_nid.uCallbackMessage = APPWM_ICONNOTIFY;
+    wcsncpy(m_nid.szTip, title, ARRAYSIZE(m_nid.szTip));
+    Shell_NotifyIcon(NIM_ADD, &m_nid);
+  }
   void set_size(int width, int height, int hints) {
     auto style = GetWindowLong(m_window, GWL_STYLE);
     if (hints == WEBVIEW_HINT_FIXED) {
@@ -1277,7 +1348,6 @@ public:
       m_browser->resize(m_window);
     }
   }
-
   void navigate(const std::string url) { m_browser->navigate(url); }
   void eval(const std::string js) { m_browser->eval(js); }
   void init(const std::string js) { m_browser->init(js); }
@@ -1290,6 +1360,7 @@ private:
   POINT m_maxsz = POINT{0, 0};
   DWORD m_main_thread = GetCurrentThreadId();
   std::unique_ptr<webview::browser> m_browser = std::make_unique<webview::edge_chromium>();
+  NOTIFYICONDATA m_nid = {};
 };
 
 using browser_engine = win32_edge_engine;
@@ -1406,6 +1477,20 @@ WEBVIEW_API void webview_show(webview_t w) {
 
 WEBVIEW_API void webview_hide(webview_t w) {
   static_cast<webview::webview *>(w)->hide();
+}
+
+WEBVIEW_API void webview_minimize(webview_t w) {
+  static_cast<webview::webview *>(w)->minimize();
+}
+
+WEBVIEW_API void webview_maximize(webview_t w) {
+  static_cast<webview::webview *>(w)->maximize();
+}
+
+WEBVIEW_API void webview_hide_to_system_tray(webview_t w) {
+  #ifdef _WIN32
+  static_cast<webview::webview *>(w)->hide_to_system_tray();  
+  #endif
 }
 
 WEBVIEW_API void webview_dispatch(webview_t w, void (*fn)(webview_t, void *),

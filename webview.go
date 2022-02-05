@@ -96,6 +96,21 @@ type WebView interface {
 	// NSWindow pointer, when using Win32 backend the pointer is HWND pointer.
 	Window() unsafe.Pointer
 
+	// Show shows the window when it's hidden
+	Show()
+
+	// Hide hides the webview window
+	Hide()
+
+	// Minimize the window
+	Minimize()
+
+	// HideToSystemTray hides the window to the system tray. The window will be shown
+	// again when the icon in the system tray is clicked. You must call SetIcon or
+	// SetIconFromFile before using this as it won't work without an icon.
+	// This only works on Windows.
+	HideToSystemTray()
+
 	// SetTitle updates the title of the native window. Must be called from the UI
 	// thread.
 	SetTitle(title string)
@@ -211,6 +226,22 @@ func (w *webview) Terminate() {
 
 func (w *webview) Window() unsafe.Pointer {
 	return C.webview_get_window(w.w)
+}
+
+func (w *webview) Show() {
+	C.webview_show(w.w)
+}
+
+func (w *webview) Hide() {
+	C.webview_hide(w.w)
+}
+
+func (w *webview) Minimize() {
+	C.webview_minimize(w.w)
+}
+
+func (w *webview) HideToSystemTray() {
+	C.webview_hide_to_system_tray(w.w)
 }
 
 func (w *webview) Navigate(url string) {
