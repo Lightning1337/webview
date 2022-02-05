@@ -1261,8 +1261,7 @@ public:
     UpdateWindow(m_window);
     SetFocus(m_window);
 
-    auto cb =
-        std::bind(&win32_edge_engine::on_message, this, std::placeholders::_1);
+    auto cb = std::bind(&win32_edge_engine::on_message, this, std::placeholders::_1);
 
     if (!m_browser->embed(m_window, debug, cb)) {
       m_browser = std::make_unique<webview::edge_html>();
