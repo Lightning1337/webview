@@ -542,6 +542,19 @@ public:
     gtk_window_set_title(GTK_WINDOW(m_window), title.c_str());
   }
 
+  GdkPixbuf* create_pixbuf(const gchar *filename)
+  {
+    GdkPixbuf *pixbuf;
+    GError *error = NULL;
+    pixbuf = gdk_pixbuf_new_from_file(filename, &error);
+    if(!pixbuf)
+    {
+      fprintf(stderr,"%s\n",error->message);
+      g_error_free(error);
+    }
+    return pixbuf;
+  }
+
   void set_icon(const std::string icon) {
     std::string temp_file_name ="/tmp/icon_xxxxxxxxxx";;
     FILE *fd = fopen((char*)temp_file_name.c_str(),"w+");
@@ -578,10 +591,18 @@ public:
     g_idle_add(GSourceFunc(hideWindowMain),this);
   }
   void minimize() {
-    gtk_window_minimize(m_window);
+    GtkWidget *toplevel = gtk_widget_get_toplevel(m_window);
+    if (gtk_widget_is_toplevel(toplevel))
+    {
+      gtk_window_iconify(toplevel);
+    }
   }
   void maximize() {
-    gtk_window_maximize(m_window);
+    GtkWidget *toplevel = gtk_widget_get_toplevel(m_window);
+    if (gtk_widget_is_toplevel(toplevel))
+    {
+      gtk_window_maximize(toplevel);
+    }
   }
 
   void set_size(int width, int height, int hints) {
