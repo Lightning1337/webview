@@ -594,14 +594,14 @@ public:
     GtkWidget *toplevel = gtk_widget_get_toplevel(m_window);
     if (gtk_widget_is_toplevel(toplevel))
     {
-      gtk_window_iconify(toplevel);
+      gtk_window_iconify((GtkWindow*)toplevel);
     }
   }
   void maximize() {
     GtkWidget *toplevel = gtk_widget_get_toplevel(m_window);
     if (gtk_widget_is_toplevel(toplevel))
     {
-      gtk_window_maximize(toplevel);
+      gtk_window_maximize((GtkWindow*)toplevel);
     }
   }
 
