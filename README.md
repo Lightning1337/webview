@@ -12,22 +12,6 @@ Webview is a cross-platform library for C/C++/Golang to build modern GUIs.
 
 It uses Cocoa/WebKit on macOS, gtk-webkit2 on Linux and Edge on Windows 10.
 
-## Todo
-
-- [x] Add `show()`, `hide()`, `minimize()`, `maximize()`, `set_icon()` and `set_icon_from_file()`
-- [x] Fix build errors on Linux and MacOS
-- [x] Fix 0xc0000005 error on Windows
-- [ ] Add WebView2 helper functions
-  - [ ] `is_webview2_runtime_installed()`
-  - [ ] `ensure_webview2_runtime()`
-- [ ] Implement `set_icon()` and `set_icon_from_file()` for MacOS
-- [ ] Add DPI awareness on Windows
-- [ ] Add `inject_css()` and `inject_html()` functions
-- [ ] Add toast notifications
-- [ ] Add dialog windows
-- [ ] Implement `hide_to_system_tray()` in Linux (and MacOS?)
-- [ ] Clean up and fix Cocoa/Objective-C code
-
 ## Webview for Go developers
 
 ### Getting started
