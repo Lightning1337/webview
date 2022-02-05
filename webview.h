@@ -100,8 +100,8 @@ WEBVIEW_API void webview_set_icon(webview_t w, const void *icon,int size);
 WEBVIEW_API void webview_set_icon_from_file(webview_t w, const char *iconFile);   
 
 // Navigates webview to the given URL. URL may be a data URI, i.e.
-// "data:text/text,<html>...</html>". It is often ok not to url-encode it
-// properly, webview will re-encode it for you.
+// "data:text/html,<html>...</html>". You should url-encode the data
+// before calling webview_navigate.
 WEBVIEW_API void webview_navigate(webview_t w, const char *url);
 
 // Injects JavaScript code at the initialization of the new page. Every time

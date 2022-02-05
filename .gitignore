@@ -2,3 +2,6 @@
 /build
 webview
 webview_test
+
+# Visual Studio Code settings
+.vscode
