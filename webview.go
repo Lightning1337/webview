@@ -162,7 +162,7 @@ type WebView interface {
 	// })).then(data => {
 	// 	const JsonData = JSON.parse(data);
 	// 	if (JsonData.error) {
-	// 		return console.error("An error has occured: " + JsonData.message);
+	// 		return console.error("An error has occurred: " + JsonData.message);
 	// 	}
 	// 	console.log("File Contents: " + JsonData["fileContents"]);
 	// });
