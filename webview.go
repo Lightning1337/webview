@@ -105,6 +105,9 @@ type WebView interface {
 	// Minimize the window
 	Minimize()
 
+	// Maximize the window
+	Maximize()
+
 	// HideToSystemTray hides the window to the system tray. The window will be shown
 	// again when the icon in the system tray is clicked. You must call SetIcon or
 	// SetIconFromFile before using this as it won't work without an icon.
@@ -165,7 +168,7 @@ type WebView interface {
 	// });
 	InitMessageHandler()
 
-	// Add a message handler. Must first call handler InitMessageHandler().
+	// Add a message handler. Must first call InitMessageHandler().
 	AddMessageHandler(eventName string, f func(message string, messageData string) string)
 
 	// Send a message event to javascript. You can use it with this code in JS:
@@ -238,6 +241,10 @@ func (w *webview) Hide() {
 
 func (w *webview) Minimize() {
 	C.webview_minimize(w.w)
+}
+
+func (w *webview) Maximize() {
+	C.webview_maximize(w.w)
 }
 
 func (w *webview) HideToSystemTray() {
