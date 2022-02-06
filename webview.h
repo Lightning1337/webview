@@ -682,7 +682,7 @@ id operator"" _str(const char *s, std::size_t) {
 
 class cocoa_wkwebview_engine {
 public:
-  cocoa_wkwebview_engine(bool debug, void *window) {
+  cocoa_wkwebview_engine(int width, int height, const char* title, bool debug, void *window) {
     // Application
     id app = ((id(*)(id, SEL))objc_msgSend)("NSApplication"_cls,
                                             "sharedApplication"_sel);
@@ -725,11 +725,14 @@ public:
       m_window = (id)window;
     }
 
+    ((void (*)(id, SEL, id))objc_msgSend)(
+        m_window, "setTitle:"_sel,
+        ((id(*)(id, SEL, const char *))objc_msgSend)("NSString"_cls, "stringWithUTF8String:"_sel, title));
+    set_size(width, height, WEBVIEW_HINT_NONE);
+
     // Webview
-    auto config =
-        ((id(*)(id, SEL))objc_msgSend)("WKWebViewConfiguration"_cls, "new"_sel);
-    m_manager =
-        ((id(*)(id, SEL))objc_msgSend)(config, "userContentController"_sel);
+    auto config = ((id(*)(id, SEL))objc_msgSend)("WKWebViewConfiguration"_cls, "new"_sel);
+    m_manager = ((id(*)(id, SEL))objc_msgSend)(config, "userContentController"_sel);
     m_webview = ((id(*)(id, SEL))objc_msgSend)("WKWebView"_cls, "alloc"_sel);
 
     if (debug) {
