@@ -469,7 +469,7 @@ namespace webview {
 
 class gtk_webkit_engine {
 public:
-  gtk_webkit_engine(bool debug, void *window)
+  gtk_webkit_engine(int width, int height, const char* title, bool debug, void *window)
       : m_window(static_cast<GtkWidget *>(window)) {
     gtk_init_check(0, NULL);
     m_window = static_cast<GtkWidget *>(window);
@@ -1191,7 +1191,7 @@ private:
 
 class win32_edge_engine {
 public:
-  win32_edge_engine(bool debug, void *window) {
+  win32_edge_engine(int width, int height, const char* title, bool debug, void *window) {
     if (window == nullptr) {
       HINSTANCE hInstance = GetModuleHandle(nullptr);
       HICON icon = (HICON)LoadImage(
@@ -1248,8 +1248,8 @@ public:
             return 0;
           });
       RegisterClassExW(&wc);
-      m_window = CreateWindowW(L"webview", L"", WS_OVERLAPPEDWINDOW,
-                               CW_USEDEFAULT, CW_USEDEFAULT, 640, 480, nullptr,
+      m_window = CreateWindowW(L"webview", to_lpwstr(title).c_str(), WS_OVERLAPPEDWINDOW,
+                               CW_USEDEFAULT, CW_USEDEFAULT, width, height, nullptr,
                                nullptr, GetModuleHandle(nullptr), nullptr);
       SetWindowLongPtr(m_window, GWLP_USERDATA, (LONG_PTR)this);
     } else {
@@ -1392,8 +1392,8 @@ namespace webview {
 
 class webview : public browser_engine {
 public:
-  webview(bool debug = false, void *wnd = nullptr)
-      : browser_engine(debug, wnd) {}
+  webview(int width = 1000, int height = 600, const char* title = "Webview", bool debug = false, void *wnd = nullptr)
+      : browser_engine(width, height, title, debug, wnd) {}
 
   void navigate(const std::string url) {
     if (url == "") {
@@ -1475,8 +1475,8 @@ private:
 };
 } // namespace webview
 
-WEBVIEW_API webview_t webview_create(int debug, void *wnd) {
-  return new webview::webview(debug, wnd);
+WEBVIEW_API webview_t webview_create(int width, int height, const char* title, int debug, void *wnd) {
+  return new webview::webview(width, height, title, debug, wnd);
 }
 
 WEBVIEW_API void webview_destroy(webview_t w) {

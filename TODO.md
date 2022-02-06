@@ -6,7 +6,7 @@
 - [ ] Add WebView2 helper functions
   - [ ] `is_webview2_runtime_installed()`
   - [ ] `ensure_webview2_runtime()`
-- [ ] Add `width`, `height` and `title` to `new()`
+- [ ] Add `width`, `height` and `title` to `create()`
 - [ ] Implement `set_icon()` and `set_icon_from_file()` for MacOS
 - [ ] Add DPI awareness on Windows
 - [ ] Add `inject_css()` and `inject_html()` functions
