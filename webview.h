@@ -476,6 +476,8 @@ public:
     if (m_window == nullptr) {
       m_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     }
+    gtk_window_set_title(GTK_WINDOW(m_window), title);
+    gtk_window_resize(GTK_WINDOW(m_window), width, height);
     g_signal_connect(G_OBJECT(m_window), "destroy",
                      G_CALLBACK(+[](GtkWidget *, gpointer arg) {
                        static_cast<gtk_webkit_engine *>(arg)->terminate();
