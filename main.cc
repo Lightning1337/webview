@@ -12,9 +12,7 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 int main()
 #endif
 {
-  webview::webview w(true, nullptr);
-  w.set_title("Example");
-  w.set_size(480, 320, WEBVIEW_HINT_NONE);
+  webview::webview w(480, 320, "Example", true, nullptr);
   w.set_size(180, 120, WEBVIEW_HINT_MIN);
   w.bind("noop", [](std::string s) -> std::string {
     std::cout << s << std::endl;
