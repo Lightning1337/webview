@@ -593,18 +593,10 @@ public:
     g_idle_add(GSourceFunc(hideWindowMain),this);
   }
   void minimize() {
-    GtkWidget *toplevel = gtk_widget_get_toplevel(m_window);
-    if (gtk_widget_is_toplevel(toplevel))
-    {
-      gtk_window_iconify((GtkWindow*)toplevel);
-    }
+    gtk_window_iconify(GTK_WINDOW(m_window));
   }
   void maximize() {
-    GtkWidget *toplevel = gtk_widget_get_toplevel(m_window);
-    if (gtk_widget_is_toplevel(toplevel))
-    {
-      gtk_window_maximize((GtkWindow*)toplevel);
-    }
+    gtk_window_maximize(GTK_WINDOW(m_window));
   }
 
   void set_size(int width, int height, int hints) {
