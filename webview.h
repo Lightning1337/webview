@@ -42,7 +42,7 @@ typedef void *webview_t;
 // is embedded into the given parent window. Otherwise a new window is created.
 // Depending on the platform, a GtkWindow, NSWindow or HWND pointer can be
 // passed here.
-WEBVIEW_API webview_t webview_create(int debug, void *window);
+WEBVIEW_API webview_t webview_create(int width, int height, const char* title, int debug, void *wnd);
 
 // Destroys a webview and closes the native window.
 WEBVIEW_API void webview_destroy(webview_t w);
