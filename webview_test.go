@@ -1,15 +1,13 @@
 package webview
 
 import (
-	"flag"
 	"log"
-	"os"
-	"testing"
 )
 
 func Example() {
 	w := New(480, 320, "Test", true)
 	defer w.Destroy()
+	w.Navigate("https://google.com/")
 	w.Bind("noop", func() string {
 		log.Println("hello")
 		return "hello"
@@ -39,12 +37,4 @@ func Example() {
 		</html>
 	)`)
 	w.Run()
-}
-
-func TestMain(m *testing.M) {
-	flag.Parse()
-	if testing.Verbose() {
-		Example()
-	}
-	os.Exit(m.Run())
 }
