@@ -3,10 +3,10 @@
 - [x] Add `show()`, `hide()`, `minimize()`, `maximize()`, `set_icon()` and `set_icon_from_file()`
 - [x] Fix build errors on Linux and MacOS
 - [x] Fix 0xc0000005 error on Windows
+- [x] Add `width`, `height` and `title` to `create()`
 - [ ] Add WebView2 helper functions
   - [ ] `is_webview2_runtime_installed()`
   - [ ] `ensure_webview2_runtime()`
-- [ ] Add `width`, `height` and `title` to `create()`
 - [ ] Implement `set_icon()` and `set_icon_from_file()` for MacOS
 - [ ] Add DPI awareness on Windows
 - [ ] Add `inject_css()` and `inject_html()` functions
