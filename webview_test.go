@@ -8,9 +8,8 @@ import (
 )
 
 func Example() {
-	w := New(true)
+	w := New(480, 320, "Test", true)
 	defer w.Destroy()
-	w.SetTitle("Hello")
 	w.Bind("noop", func() string {
 		log.Println("hello")
 		return "hello"

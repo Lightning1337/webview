@@ -13,7 +13,7 @@
 // TEST: start app loop and terminate it.
 // =================================================================
 static void test_terminate() {
-  webview::webview w(false, nullptr);
+  webview::webview w(480, 320, "Test", false, nullptr);
   w.dispatch([&]() { w.terminate(); });
   w.run();
 }
@@ -31,10 +31,8 @@ static void cb_terminate(webview_t w, void *arg) {
 }
 static void test_c_api() {
   webview_t w;
-  w = webview_create(false, nullptr);
-  webview_set_size(w, 480, 320, 0);
-  webview_set_title(w, "Test");
-  webview_navigate(w, "https://github.com/zserge/webview");
+  w = webview_create(480, 320, "Test", false, nullptr);
+  webview_navigate(w, "https://github.com/Lightning1337/webview");
   webview_dispatch(w, cb_assert_arg, (void *)"arg");
   webview_dispatch(w, cb_terminate, nullptr);
   webview_run(w);
@@ -46,7 +44,7 @@ static void test_c_api() {
 // =================================================================
 struct test_webview : webview::browser_engine {
   using cb_t = std::function<void(test_webview *, int, const std::string)>;
-  test_webview(cb_t cb) : webview::browser_engine(true, nullptr), m_cb(cb) {}
+  test_webview(cb_t cb) : webview::browser_engine(480, 320, "Test", true, nullptr), m_cb(cb) {}
   void on_message(const std::string msg) override { m_cb(this, i++, msg); }
   int i = 0;
   cb_t m_cb;
