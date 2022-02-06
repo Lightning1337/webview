@@ -31,10 +31,8 @@ import "github.com/Lightning1337/webview"
 
 func main() {
 	debug := true
-	w := webview.New(debug)
+	w := webview.New(800, 600, "Minimal webview example", debug)
 	defer w.Destroy()
-	w.SetTitle("Minimal webview example")
-	w.SetSize(800, 600, webview.HintNone)
 	w.SetIconFromFile("path/to/icon.ico")
 	w.Navigate("https://en.m.wikipedia.org/wiki/Main_Page")
 	w.Run()
@@ -97,9 +95,7 @@ int WINAPI WinMain(HINSTANCE hInt, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nCm
 #else
 int main() {
 #endif
-  webview::webview w(true, nullptr);
-  w.set_title("Minimal example");
-  w.set_size(480, 320, WEBVIEW_HINT_NONE);
+  webview::webview w(480, 320, "Minimal example", true, nullptr);
   w.navigate("https://en.m.wikipedia.org/wiki/Main_Page");
   w.run();
   return 0;
@@ -125,9 +121,7 @@ int WINAPI WinMain(HINSTANCE hInt, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nCm
 #else
 int main() {
 #endif
-	webview_t w = webview_create(0, NULL);
-	webview_set_title(w, "Webview Example");
-	webview_set_size(w, 480, 320, WEBVIEW_HINT_NONE);
+	webview_t w = webview_create(480, 320, "Webview Example", 0, NULL);
 	webview_navigate(w, "https://en.m.wikipedia.org/wiki/Main_Page");
 	webview_run(w);
 	webview_destroy(w);
