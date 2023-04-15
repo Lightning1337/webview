@@ -32,7 +32,7 @@ static void cb_terminate(webview_t w, void *arg) {
 static void test_c_api() {
   webview_t w;
   w = webview_create(480, 320, "Test", false, nullptr);
-  webview_navigate(w, "https://github.com/Lightning1337/webview");
+  webview_navigate(w, "https://github.com/LightningDev1/webview");
   webview_dispatch(w, cb_assert_arg, (void *)"arg");
   webview_dispatch(w, cb_terminate, nullptr);
   webview_run(w);

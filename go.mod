@@ -1,3 +1,3 @@
-module github.com/Lightning1337/webview
+module github.com/LightningDev1/webview
 
 go 1.13

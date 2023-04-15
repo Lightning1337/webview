@@ -1,9 +1,9 @@
 # webview
 
 
-[![Build Status](https://img.shields.io/github/workflow/status/Lightning1337/webview/CI%20Pipeline)](https://github.com/Lightning1337/webview)
-[![GoDoc](https://godoc.org/github.com/Lightning1337/webview?status.svg)](https://godoc.org/github.com/Lightning1337/webview)
-[![Go Report Card](https://goreportcard.com/badge/github.com/Lightning1337/webview)](https://goreportcard.com/report/github.com/Lightning1337/webview)
+[![Build Status](https://img.shields.io/github/workflow/status/LightningDev1/webview/CI%20Pipeline)](https://github.com/LightningDev1/webview)
+[![GoDoc](https://godoc.org/github.com/LightningDev1/webview?status.svg)](https://godoc.org/github.com/LightningDev1/webview)
+[![Go Report Card](https://goreportcard.com/badge/github.com/LightningDev1/webview)](https://goreportcard.com/report/github.com/LightningDev1/webview)
 
 
 A fork of [github.com/webview/webview](https://github.com/webview/webview)
@@ -19,7 +19,7 @@ It uses Cocoa/WebKit on macOS, gtk-webkit2 on Linux and Edge on Windows 10.
 Install Webview library with `go get`:
 
 ```
-$ go get github.com/Lightning1337/webview
+$ go get github.com/LightningDev1/webview
 ```
 
 Import the package and start using it:
@@ -27,7 +27,7 @@ Import the package and start using it:
 ```go
 package main
 
-import "github.com/Lightning1337/webview"
+import "github.com/LightningDev1/webview"
 
 func main() {
 	debug := true
@@ -56,7 +56,7 @@ $ open example.app # Or click on the app in Finder
 $ go build -ldflags="-H windowsgui" -o webview-example.exe
 ```
 
-For more details see [godoc](https://godoc.org/github.com/Lightning1337/webview).
+For more details see [godoc](https://godoc.org/github.com/LightningDev1/webview).
 
 ### Distributing webview apps
 
